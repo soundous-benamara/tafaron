@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "683535665490",
+    "project_id": "tafaron-afe6e",
+    "storage_bucket": "tafaron-afe6e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:683535665490:android:8182bf8574d0607580528b",
+        "android_client_info": {
+          "package_name": "com.example.turns"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "683535665490-p3ejoihem83k5cq832nv2ul3qh3omifb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDttv8zhT0nEnGCp0cuKjCRwhsXf3vga2g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "683535665490-p3ejoihem83k5cq832nv2ul3qh3omifb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
