@@ -74,7 +74,7 @@ class MyPlayingCard extends StatelessWidget {
 
   static Widget emptyCard() {
     Widget build(BuildContext context) {
-      return Container(height: 125, child: Text(''));
+      return Container(height: 40, child: Text(''));
     }
   }
 
@@ -118,6 +118,69 @@ class MyPlayingCard extends StatelessWidget {
         break;
       case CardValue.six:
         // TODO: Handle this case.
+        break;
+    }
+  }
+
+  static CardValue IntToCardValue(int value) {
+    switch (value) {
+      case 7:
+        return CardValue.seven;
+        break;
+      case 8:
+        return CardValue.eight;
+        break;
+      case 9:
+        return CardValue.nine;
+        break;
+      case 10:
+        return CardValue.ten;
+        break;
+      case 11:
+        return CardValue.jack;
+        break;
+      case 12:
+        return CardValue.queen;
+        break;
+      case 13:
+        return CardValue.king;
+        break;
+      case 14:
+        return CardValue.ace;
+        break;
+    }
+  }
+
+  static Suit StringToSuit(String value) {
+    switch (value) {
+      case 'clubs':
+        return Suit.clubs;
+        break;
+      case 'diamonds':
+        return Suit.diamonds;
+        break;
+      case 'spades':
+        return Suit.spades;
+        break;
+      case 'hearts':
+        return Suit.hearts;
+        break;
+    }
+  }
+  
+  static String SuitToString(Suit value) {
+    switch (value) {
+      case Suit.clubs:
+        return 'clubs';
+        break;
+      case Suit.diamonds:
+        return 'diamonds';
+        break;
+      case Suit.spades:
+        return 'spades';
+        break;
+      case Suit.hearts:
+        return 'hearts';
         break;
     }
   }

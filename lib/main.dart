@@ -66,8 +66,6 @@ class _MyHomePageState extends State<MyHomePage> {
     getNumOfPlayers();
   }
 
-  void fillArray() {}
-
   User user;
   List<String> userIds = [];
 

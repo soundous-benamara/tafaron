@@ -55,35 +55,6 @@ class _WaitingRoomState extends State<WaitingRoom> {
       stream: FirebaseFirestore.instance.collection('room').snapshots(),
       builder: (context, userSnapshot) {
         user = FirebaseAuth.instance.currentUser;
-        switch (numOfPlayers) {
-          case 0:
-            break;
-          case 1:
-            FirebaseFirestore.instance
-                .collection('room')
-                .doc('WIO7ujdueiQMdWPGkqSq')
-                .update({'uid1': user.uid});
-            break;
-          case 2:
-            FirebaseFirestore.instance
-                .collection('room')
-                .doc('WIO7ujdueiQMdWPGkqSq')
-                .update({'uid2': user.uid});
-            break;
-          case 3:
-            FirebaseFirestore.instance
-                .collection('room')
-                .doc('WIO7ujdueiQMdWPGkqSq')
-                .update({'uid3': user.uid});
-            break;
-          case 4:
-            FirebaseFirestore.instance
-                .collection('room')
-                .doc('WIO7ujdueiQMdWPGkqSq')
-                .update({'uid4': user.uid});
-            break;
-          default:
-        }
         if (userSnapshot.data == null) {
           return CircularProgressIndicator();
         }
