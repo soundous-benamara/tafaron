@@ -59,8 +59,6 @@ class _WaitingRoomState extends State<WaitingRoom> {
           return CircularProgressIndicator();
         }
         if (userSnapshot.data.docs[0]['numOfPlayer'] == 4) {
-          print('PPPPPPPPPPPP');
-          print(userSnapshot.data.docs[0]['numOfPlayer']);
           return FirstPlayer();
         }
         return Scaffold(

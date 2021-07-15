@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:turns/MyPlayingCards.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:turns/StartNewGame.dart';
+import 'package:turns/auth_screen.dart';
 
 class FirstPlayer extends StatefulWidget {
   FirstPlayer({Key key, this.title}) : super(key: key);
@@ -44,22 +45,60 @@ class _FirstPlayerState extends State<FirstPlayer> {
   MyPlayingCard c3;
   MyPlayingCard c4;
 
+  Map<String, dynamic> shuffledDeck;
+
+  Future<QuerySnapshot> getUsers() async {
+    final res = await FirebaseFirestore.instance.collection('users').get();
+    userName1 = res.docs[0]['username'];
+    userName2 = res.docs[1]['username'];
+    userName3 = res.docs[2]['username'];
+    userName4 = res.docs[3]['username'];
+    uid1 = res.docs[0].id;
+    uid2 = res.docs[1].id;
+    uid3 = res.docs[2].id;
+    uid4 = res.docs[3].id;
+    return res;
+  }
+
+  void getCenter() async {
+    final res = await FirebaseFirestore.instance.collection('games').get();
+
+    cen = await res.docs[0]['center'] as Map<String, dynamic>;
+    center[0] = MyPlayingCard(
+        value: MyPlayingCard.IntToCardValue(cen['card1']['val']),
+        suit: MyPlayingCard.StringToSuit(cen['card1']['suit']));
+    center[0].showBack = cen['showback'];
+    center[1] = MyPlayingCard(
+        value: MyPlayingCard.IntToCardValue(cen['card2']['val']),
+        suit: MyPlayingCard.StringToSuit(cen['card2']['suit']));
+    center[1].showBack = cen['showback'];
+    center[2] = MyPlayingCard(
+        value: MyPlayingCard.IntToCardValue(cen['card3']['val']),
+        suit: MyPlayingCard.StringToSuit(cen['card3']['suit']));
+    center[2].showBack = cen['showback'];
+    center[3] = MyPlayingCard(
+        value: MyPlayingCard.IntToCardValue(cen['card4']['val']),
+        suit: MyPlayingCard.StringToSuit(cen['card4']['suit']));
+    center[3].showBack = cen['showback'];
+  }
+
   String userName1, userName2, userName3, userName4;
   @override
   void initState() {
     super.initState();
+    getCenter();
 
     user = FirebaseAuth.instance.currentUser;
-
-    rank.add(0);
-    rank.add(0);
-    rank.add(0);
-    rank.add(0);
 
     userName1 = '';
     userName2 = '';
     userName3 = '';
     userName4 = '';
+
+    rank.add(0);
+    rank.add(0);
+    rank.add(0);
+    rank.add(0);
 
     SystemChrome.setEnabledSystemUIOverlays([]);
 
@@ -74,11 +113,19 @@ class _FirstPlayerState extends State<FirstPlayer> {
     left.add(MyPlayingCard.emptyCard());
     //MyPlayingCard.ALL_CARDS.shuffle();
 
-    MyPlayingCard.ALL_CARDS.shuffle();
-
     _enabled = true;
 
     SystemChrome.setEnabledSystemUIOverlays([]);
+  }
+
+  bool isInit = false;
+  @override
+  void didchangeDependencies() {
+    super.didChangeDependencies();
+    if (!isInit) {
+      isInit = true;
+      initState();
+    }
   }
 
   List<int> rank = [];
@@ -126,454 +173,510 @@ class _FirstPlayerState extends State<FirstPlayer> {
     print('after toast');
   }
 
-  var val = '';
-  var s = '';
-
   @override
   Widget build(BuildContext context) {
     ShapeBorder shape = RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
         side: BorderSide(color: Colors.black, width: 0.5));
 
-    return StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('games').snapshots(),
-        builder: (context, snapshotGames) {
-          return StreamBuilder(
-              stream: FirebaseFirestore.instance.collection('room').snapshots(),
-              builder: (context, snapshotRoom) {
-                return StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection('users')
-                        .snapshots(),
-                    builder: (context, snapshotUsers) {
-                      if (snapshotGames.data == null ||
-                          snapshotRoom.data == null ||
-                          snapshotUsers.data == null) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-
-                      userName1 = snapshotUsers.data.docs[0]['username'];
-                      print('ggggggggggggggggggggggggggggggggggggggg');
-                      print(userName1);
-
-                      userName2 = snapshotUsers.data.docs[1]['username'];
-                      print('ggggggggggggggggggggggggggggggggggggggg');
-                      print(userName2);
-
-                      userName3 = snapshotUsers.data.docs[2]['username'];
-                      print('ggggggggggggggggggggggggggggggggggggggg');
-                      print(userName3);
-
-                      userName4 = snapshotUsers.data.docs[3]['username'];
-                      print('ggggggggggggggggggggggggggggggggggggggg');
-                      print(userName4);
-
-                      cen = snapshotGames.data.docs[0]['center']
-                          as Map<String, dynamic>;
-                      print(cen);
-                      print(center);
-                      center[0] = MyPlayingCard(
-                          value:
-                              MyPlayingCard.IntToCardValue(cen['card1']['val']),
-                          suit:
-                              MyPlayingCard.StringToSuit(cen['card1']['suit']));
-                      center[0].showBack = cen['showback'];
-                      center[1] = MyPlayingCard(
-                          value:
-                              MyPlayingCard.IntToCardValue(cen['card2']['val']),
-                          suit:
-                              MyPlayingCard.StringToSuit(cen['card2']['suit']));
-                      center[1].showBack = cen['showback'];
-                      center[2] = MyPlayingCard(
-                          value:
-                              MyPlayingCard.IntToCardValue(cen['card3']['val']),
-                          suit:
-                              MyPlayingCard.StringToSuit(cen['card3']['suit']));
-                      center[2].showBack = cen['showback'];
-                      center[3] = MyPlayingCard(
-                          value:
-                              MyPlayingCard.IntToCardValue(cen['card4']['val']),
-                          suit:
-                              MyPlayingCard.StringToSuit(cen['card4']['suit']));
-                      center[3].showBack = cen['showback'];
-                      print('CARDS **********');
-                      print(cen);
-                      print(center);
-                      print('MMMMMMMMMMMMMMMMM');
-                      FirebaseFirestore.instance
-                          .collection('users')
-                          .snapshots()
-                          .listen((event) async {
-                        uid1 = await event.docs[0].id;
-                        uid2 = await event.docs[1].id;
-                        uid3 = await event.docs[2].id;
-                        uid4 = await event.docs[3].id;
-                      });
-                      print('UUUSSEERRRR');
-                      print(user.uid);
-                      print('snapshot');
-                      print(snapshotGames.data.docs[0]['p1']);
-                      print(snapshotGames.data.docs[0]['p2']);
-                      print(snapshotGames.data.docs[0]['p3']);
-                      print(snapshotGames.data.docs[0]['p4']);
-
-                      Future.delayed(Duration(seconds: 4), () {
-                        Fluttertoast.showToast(
-                          msg: 'we will distribute the cards now!!',
-                          backgroundColor: Colors.black,
-                          gravity: ToastGravity.CENTER,
-                          toastLength: Toast.LENGTH_LONG,
-                          textColor: Colors.white,
-                          timeInSecForIosWeb: 1,
-                          fontSize: 17,
-                        );});
-
-                        if (snapshotGames.data == null ||
-                            snapshotRoom.data == null ||
-                            snapshotUsers.data == null) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        FirebaseFirestore.instance
+    return FutureBuilder(
+        future: FirebaseFirestore.instance.collection('room').get(),
+        builder: (context, snapshotRoom) {
+          if (snapshotRoom.connectionState == ConnectionState.waiting) {
+            CircularProgressIndicator();
+          } else
+            return FutureBuilder(
+                future: getUsers(),
+                builder: (context, snapshotUsers) {
+                  if (snapshotUsers.connectionState ==
+                      ConnectionState.waiting) {
+                    CircularProgressIndicator();
+                  } else
+                    return StreamBuilder(
+                        stream: FirebaseFirestore.instance
                             .collection('games')
-                            .doc('YpyyMAaFcRzCPbphEfYR')
-                            .update({
-                          'p1': {
-                            'val': MyPlayingCard.CardValueToInt(
-                                MyPlayingCard.ALL_CARDS[0].cardValue),
-                            'suit': MyPlayingCard.SuitToString(
-                                MyPlayingCard.ALL_CARDS[0].cardSuit),
+                            .snapshots(),
+                        builder: (context, snapshotGames) {
+                          if (snapshotGames.data == null ||
+                              snapshotRoom.data == null ||
+                              snapshotUsers.data == null ||
+                              snapshotUsers.data.docs[3]['username'] == null) {
+                            Center(
+                              child: CircularProgressIndicator(),
+                            );
                           }
+
+                          print(snapshotGames.data.docs[0]['deck']['card1']);
+                          print(snapshotGames.data.docs[0]['deck']['card2']);
+                          print(snapshotGames.data.docs[0]['deck']['card3']);
+                          print(snapshotGames.data.docs[0]['deck']['card4']);
+                          print("*****************");
+                          print("$shuffledDeck['card1']");
+                          print("$shuffledDeck['card2']");
+                          print("$shuffledDeck['card3']");
+                          print("$shuffledDeck['card4']");
+                          return buildGameBoard(
+                              snapshotGames, snapshotUsers, snapshotRoom);
                         });
-
-                        FirebaseFirestore.instance
-                            .collection('games')
-                            .doc('YpyyMAaFcRzCPbphEfYR')
-                            .update({
-                          'p2': {
-                            'val': MyPlayingCard.CardValueToInt(
-                                MyPlayingCard.ALL_CARDS[1].cardValue),
-                            'suit': MyPlayingCard.SuitToString(
-                                MyPlayingCard.ALL_CARDS[1].cardSuit),
-                          }
-                        });
-
-                        FirebaseFirestore.instance
-                            .collection('games')
-                            .doc('YpyyMAaFcRzCPbphEfYR')
-                            .update({
-                          'p3': {
-                            'val': MyPlayingCard.CardValueToInt(
-                                MyPlayingCard.ALL_CARDS[2].cardValue),
-                            'suit': MyPlayingCard.SuitToString(
-                                MyPlayingCard.ALL_CARDS[2].cardSuit),
-                          }
-                        });
-
-                        FirebaseFirestore.instance
-                            .collection('games')
-                            .doc('YpyyMAaFcRzCPbphEfYR')
-                            .update({
-                          'p4': {
-                            'val': MyPlayingCard.CardValueToInt(
-                                MyPlayingCard.ALL_CARDS[3].cardValue),
-                            'suit': MyPlayingCard.SuitToString(
-                                MyPlayingCard.ALL_CARDS[3].cardSuit),
-                          }
-                        });
-
-                        p1 = snapshotGames.data.docs[0]['p1']
-                            as Map<String, dynamic>;
-                        rank[0] = p1['val'];
-
-                        p2 = snapshotGames.data.docs[0]['p2']
-                            as Map<String, dynamic>;
-                        rank[1] = p2['val'];
-
-                        p3 = snapshotGames.data.docs[0]['p3']
-                            as Map<String, dynamic>;
-                        rank[2] = p3['val'];
-
-                        p4 = snapshotGames.data.docs[0]['p4']
-                            as Map<String, dynamic>;
-                        rank[3] = p4['val'];
-
-                        print('HELLLLOO');
-                        print('ontap');
-                        print(snapshotGames.data.docs[0]['p1']);
-                        print(snapshotGames.data.docs[0]['p2']);
-                        print(snapshotGames.data.docs[0]['p3']);
-                        print(snapshotGames.data.docs[0]['p4']);
-
-                        if (user.uid == uid1) {
-                          deck.clear();
-                          deck.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p1['suit']),
-                              value: MyPlayingCard.IntToCardValue(p1['val'])));
-
-                          left.clear();
-                          left.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p2['suit']),
-                              value: MyPlayingCard.IntToCardValue(p2['val'])));
-                          top.clear();
-                          top.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p3['suit']),
-                              value: MyPlayingCard.IntToCardValue(p3['val'])));
-                          right.clear();
-                          right.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p4['suit']),
-                              value: MyPlayingCard.IntToCardValue(p4['val'])));
-
-                          deck[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          left[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          right[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          top[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                        }
-                        if (user.uid == uid2) {
-                          deck.clear();
-                          deck.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p2['suit']),
-                              value: MyPlayingCard.IntToCardValue(p2['val'])));
-                          left.clear();
-                          left.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p3['suit']),
-                              value: MyPlayingCard.IntToCardValue(p3['val'])));
-                          top.clear();
-                          top.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p4['suit']),
-                              value: MyPlayingCard.IntToCardValue(p4['val'])));
-                          right.clear();
-                          right.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p1['suit']),
-                              value: MyPlayingCard.IntToCardValue(p1['val'])));
-
-                          deck[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          left[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          right[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          top[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                        }
-
-                        if (user.uid == uid3) {
-                          deck.clear();
-                          deck.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p3['suit']),
-                              value: MyPlayingCard.IntToCardValue(p3['val'])));
-                          left.clear();
-                          left.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p4['suit']),
-                              value: MyPlayingCard.IntToCardValue(p4['val'])));
-                          top.clear();
-                          top.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p1['suit']),
-                              value: MyPlayingCard.IntToCardValue(p1['val'])));
-                          right.clear();
-                          right.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p2['suit']),
-                              value: MyPlayingCard.IntToCardValue(p2['val'])));
-
-                          deck[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          left[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          right[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          top[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                        }
-
-                        if (user.uid == uid4) {
-                          deck.clear();
-                          deck.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p4['suit']),
-                              value: MyPlayingCard.IntToCardValue(p4['val'])));
-                          left.clear();
-                          left.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p1['suit']),
-                              value: MyPlayingCard.IntToCardValue(p1['val'])));
-                          top.clear();
-                          top.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p2['suit']),
-                              value: MyPlayingCard.IntToCardValue(p2['val'])));
-                          right.clear();
-                          right.add(MyPlayingCard(
-                              suit: MyPlayingCard.StringToSuit(p3['suit']),
-                              value: MyPlayingCard.IntToCardValue(p3['val'])));
-
-                          deck[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          left[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          right[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                          top[0].showBack =
-                              snapshotGames.data.docs[0]['showCard'];
-                        }
-                        indexOfPlayer = 0;
-                        maxVal = rank[0];
-                        for (int index = 1; index < rank.length; index++) {
-                          if (rank.elementAt(index) < maxVal) {
-                            maxVal = rank.elementAt(index);
-                            indexOfPlayer = index;
-                          }
-                          print(maxVal);
-                        }
-                        switch (indexOfPlayer) {
-                          case 0:
-                            Future.delayed(Duration(seconds: 2), () {
-                              Fluttertoast.showToast(
-                                msg: userName1 + ' will start the game !!',
-                                backgroundColor: Colors.black,
-                                gravity: ToastGravity.CENTER,
-                                toastLength: Toast.LENGTH_LONG,
-                                textColor: Colors.white,
-                                timeInSecForIosWeb: 1,
-                                fontSize: 17,
-                              );
-                            });
-                            FirebaseFirestore.instance
-                                .collection('games')
-                                .doc('YpyyMAaFcRzCPbphEfYR')
-                                .update({'firstPlayer': uid1});
-
-                            break;
-
-                          case 1:
-                            Future.delayed(Duration(seconds: 2), () {
-                              Fluttertoast.showToast(
-                                msg: userName2 + ' will start the game !!',
-                                backgroundColor: Colors.black,
-                                gravity: ToastGravity.CENTER,
-                                toastLength: Toast.LENGTH_LONG,
-                                textColor: Colors.white,
-                                timeInSecForIosWeb: 1,
-                                fontSize: 17,
-                              );
-                            });
-                            FirebaseFirestore.instance
-                                .collection('games')
-                                .doc('YpyyMAaFcRzCPbphEfYR')
-                                .update({'firstPlayer': uid2});
-
-                            break;
-
-                          case 2:
-                            Future.delayed(Duration(seconds: 2), () {
-                              Fluttertoast.showToast(
-                                msg: userName3 + ' will start the game !!',
-                                backgroundColor: Colors.black,
-                                gravity: ToastGravity.CENTER,
-                                toastLength: Toast.LENGTH_LONG,
-                                textColor: Colors.white,
-                                timeInSecForIosWeb: 1,
-                                fontSize: 17,
-                              );
-                            });
-                            FirebaseFirestore.instance
-                                .collection('games')
-                                .doc('YpyyMAaFcRzCPbphEfYR')
-                                .update({'firstPlayer': uid3});
-
-                            break;
-
-                          case 3:
-                            Future.delayed(Duration(seconds: 2), () {
-                              Fluttertoast.showToast(
-                                msg: userName4 + ' will start the game !!',
-                                backgroundColor: Colors.black,
-                                gravity: ToastGravity.CENTER,
-                                toastLength: Toast.LENGTH_LONG,
-                                textColor: Colors.white,
-                                timeInSecForIosWeb: 1,
-                                fontSize: 17,
-                              );
-                            });
-                            FirebaseFirestore.instance
-                                .collection('games')
-                                .doc('YpyyMAaFcRzCPbphEfYR')
-                                .update({'firstPlayer': uid4});
-                            break;
-                          default:
-                        }
-                        print('first playerrrrrrr-rr----');
-                        print(snapshotGames.data.docs[0]['firstPlayer']);
-                      
-
-                      return MaterialApp(
-                          home: Scaffold(
-                        backgroundColor: Color.fromRGBO(44, 62, 80, 1.0),
-                        body: Align(
-                          alignment: Alignment.center,
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Transform.rotate(
-                                  angle: 3.14 / 2,
-                                  child: Container(
-                                    padding: EdgeInsets.all(4),
-                                    width: 80,
-                                    child: left.elementAt(0),
-                                  ),
-                                ),
-                                Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(0),
-                                      width: 100,
-                                      child: top.elementAt(0),
-                                    ),
-                                    GestureDetector(
-                                      child: Transform.rotate(
-                                        angle: 3.14 / 2,
-                                        child: Container(
-                                          padding: EdgeInsets.all(0),
-                                          width: 200,
-                                          child: FlatCardFan(
-                                            children: center
-                                                .map(
-                                                  (e) => Container(
-                                                    width: 70,
-                                                    child: e,
-                                                  ),
-                                                )
-                                                .toList(),
-                                          ),
-                                        ),
-                                      ),onTap: (){},
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.all(0),
-                                      width: 100,
-                                      child: deck.elementAt(0),
-                                    ),
-                                  ],
-                                ),
-                                Transform.rotate(
-                                  angle: 3.14 / 2,
-                                  child: Container(
-                                    padding: EdgeInsets.all(0),
-                                    width: 100,
-                                    child: right.elementAt(0),
-                                  ),
-                                ),
-                              ]),
-                        ),
-                      ));
-                    });
-              });
+                });
         });
+  }
+
+  Future<void> addDeck() async {
+    MyPlayingCard.ALL_CARDS.shuffle();
+    await FirebaseFirestore.instance
+        .collection('games')
+        .doc('YpyyMAaFcRzCPbphEfYR')
+        .update({
+      'deck': {
+        'card1': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[0].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[0].cardSuit),
+        },
+        'card2': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[1].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[1].cardSuit),
+        },
+        'card3': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[2].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[2].cardSuit),
+        },
+        'card4': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[3].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[3].cardSuit),
+        },
+        'card5': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[4].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[4].cardSuit),
+        },
+        'card6': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[5].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[5].cardSuit),
+        },
+        'card7': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[6].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[6].cardSuit),
+        },
+        'card8': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[7].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[7].cardSuit),
+        },
+        'card9': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[8].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[8].cardSuit),
+        },
+        'card10': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[9].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[9].cardSuit),
+        },
+        'card11': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[10].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[10].cardSuit),
+        },
+        'card12': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[11].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[11].cardSuit),
+        },
+        'card13': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[12].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[12].cardSuit),
+        },
+        'card14': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[13].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[13].cardSuit),
+        },
+        'card15': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[14].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[14].cardSuit),
+        },
+        'card16': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[15].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[15].cardSuit),
+        },
+        'card17': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[16].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[16].cardSuit),
+        },
+        'card18': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[17].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[17].cardSuit),
+        },
+        'card19': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[18].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[18].cardSuit),
+        },
+        'card20': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[19].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[19].cardSuit),
+        },
+        'card21': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[20].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[20].cardSuit),
+        },
+        'card22': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[21].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[21].cardSuit),
+        },
+        'card23': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[22].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[22].cardSuit),
+        },
+        'card24': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[23].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[23].cardSuit),
+        },
+        'card25': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[24].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[24].cardSuit),
+        },
+        'card26': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[25].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[25].cardSuit),
+        },
+        'card27': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[26].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[26].cardSuit),
+        },
+        'card28': {
+          'val': MyPlayingCard.CardValueToInt(
+              MyPlayingCard.ALL_CARDS[27].cardValue),
+          'suit':
+              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[27].cardSuit),
+        },
+      }
+    });
+  }
+
+  Future<void> displayerCards(snapshotGames) async {
+    final res = await FirebaseFirestore.instance.collection('games').get();
+
+    setState(() {
+      shuffledDeck = res.docs[0]['deck'] as Map<String, dynamic>;
+    });
+    if (user.uid == uid1) {
+      deck.clear();
+      deck.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card1']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card1']['val'])));
+      left.clear();
+      left.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card2']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card2']['val'])));
+      top.clear();
+      top.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card3']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card3']['val'])));
+      right.clear();
+      right.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card4']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card4']['val'])));
+      rank[0] = shuffledDeck['card1']['val'];
+      rank[1] = shuffledDeck['card2']['val'];
+      rank[2] = shuffledDeck['card3']['val'];
+      rank[3] = shuffledDeck['card4']['val'];
+      deck[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      left[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      right[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      top[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      setState(() {});
+    }
+    if (user.uid == uid2) {
+      deck.clear();
+      deck.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card2']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card2']['val'])));
+      left.clear();
+      left.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card3']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card3']['val'])));
+      top.clear();
+      top.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card4']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card4']['val'])));
+      right.clear();
+      right.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card1']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card1']['val'])));
+      rank[0] = shuffledDeck['card1']['val'];
+      rank[1] = shuffledDeck['card2']['val'];
+      rank[2] = shuffledDeck['card3']['val'];
+      rank[3] = shuffledDeck['card4']['val'];
+      deck[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      left[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      right[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      top[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      setState(() {});
+    }
+    if (user.uid == uid3) {
+      deck.clear();
+      deck.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card3']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card3']['val'])));
+      left.clear();
+      left.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card4']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card4']['val'])));
+      top.clear();
+      top.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card1']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card1']['val'])));
+      right.clear();
+      right.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card2']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card2']['val'])));
+      rank[0] = shuffledDeck['card1']['val'];
+      rank[1] = shuffledDeck['card2']['val'];
+      rank[2] = shuffledDeck['card3']['val'];
+      rank[3] = shuffledDeck['card4']['val'];
+      deck[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      left[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      right[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      top[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      setState(() {});
+    }
+    if (user.uid == uid4) {
+      deck.clear();
+      deck.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card4']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card4']['val'])));
+      left.clear();
+      left.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card1']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card1']['val'])));
+      top.clear();
+      top.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card2']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card2']['val'])));
+      right.clear();
+      right.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card3']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card3']['val'])));
+      rank[0] = shuffledDeck['card1']['val'];
+      rank[1] = shuffledDeck['card2']['val'];
+      rank[2] = shuffledDeck['card3']['val'];
+      rank[3] = shuffledDeck['card4']['val'];
+      deck[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      left[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      right[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      top[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      setState(() {});
+    }
+  }
+
+  Future<void> getFirstPlayer() async {
+    indexOfPlayer = 0;
+    maxVal = rank[0];
+    for (int index = 1; index < rank.length; index++) {
+      if (rank.elementAt(index) < maxVal) {
+        maxVal = rank.elementAt(index);
+        indexOfPlayer = index;
+      }
+      print(maxVal);
+    }
+    switch (indexOfPlayer) {
+      case 0:
+        Future.delayed(Duration(seconds: 2), () {
+          Fluttertoast.showToast(
+            msg: userName1 + ' will start the game !!',
+            backgroundColor: Colors.black,
+            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_LONG,
+            textColor: Colors.white,
+            timeInSecForIosWeb: 1,
+            fontSize: 17,
+          );
+        });
+        await FirebaseFirestore.instance
+            .collection('games')
+            .doc('YpyyMAaFcRzCPbphEfYR')
+            .update({'firstPlayer': uid1});
+
+        break;
+
+      case 1:
+        Future.delayed(Duration(seconds: 2), () {
+          Fluttertoast.showToast(
+            msg: userName2 + ' will start the game !!',
+            backgroundColor: Colors.black,
+            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_LONG,
+            textColor: Colors.white,
+            timeInSecForIosWeb: 1,
+            fontSize: 17,
+          );
+        });
+        await FirebaseFirestore.instance
+            .collection('games')
+            .doc('YpyyMAaFcRzCPbphEfYR')
+            .update({'firstPlayer': uid2});
+
+        break;
+
+      case 2:
+        Future.delayed(Duration(seconds: 2), () {
+          Fluttertoast.showToast(
+            msg: userName3 + ' will start the game !!',
+            backgroundColor: Colors.black,
+            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_LONG,
+            textColor: Colors.white,
+            timeInSecForIosWeb: 1,
+            fontSize: 17,
+          );
+        });
+        await FirebaseFirestore.instance
+            .collection('games')
+            .doc('YpyyMAaFcRzCPbphEfYR')
+            .update({'firstPlayer': uid3});
+
+        break;
+
+      case 3:
+        Future.delayed(Duration(seconds: 2), () {
+          Fluttertoast.showToast(
+            msg: userName4 + ' will start the game !!',
+            backgroundColor: Colors.black,
+            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_LONG,
+            textColor: Colors.white,
+            timeInSecForIosWeb: 1,
+            fontSize: 17,
+          );
+        });
+        await FirebaseFirestore.instance
+            .collection('games')
+            .doc('YpyyMAaFcRzCPbphEfYR')
+            .update({'firstPlayer': uid4});
+        break;
+      default:
+    }
+  }
+
+  Widget buildGameBoard(snapshotGames, snapshotUsers, snapshotRoom) {
+    return MaterialApp(
+        home: Scaffold(
+      backgroundColor: Color.fromRGBO(44, 62, 80, 1.0),
+      body: Align(
+        alignment: Alignment.center,
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Transform.rotate(
+            angle: 3.14 / 2,
+            child: Container(
+              padding: EdgeInsets.all(4),
+              width: 80,
+              child: left.elementAt(0),
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.all(0),
+                width: 100,
+                child: top.elementAt(0),
+              ),
+              GestureDetector(
+                child: Transform.rotate(
+                  angle: 3.14 / 2,
+                  child: Container(
+                    padding: EdgeInsets.all(0),
+                    width: 200,
+                    child: FlatCardFan(
+                      children: center
+                          .map(
+                            (e) => Container(
+                              width: 70,
+                              child: e,
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ),
+                onTap: () async {
+                  await addDeck();
+
+                  await displayerCards(snapshotGames);
+                  await getFirstPlayer();
+                  if (snapshotRoom.data.docs[0]['numOfPlayer'] == -1) {
+                    return AuthScreen(
+                      numOfPlayers: snapshotRoom.data.docs[0]['numOfPlayer'],
+                    );
+                  }
+                },
+              ),
+              Container(
+                padding: EdgeInsets.all(0),
+                width: 100,
+                child: deck.elementAt(0),
+              ),
+            ],
+          ),
+          Transform.rotate(
+            angle: 3.14 / 2,
+            child: Container(
+              padding: EdgeInsets.all(0),
+              width: 100,
+              child: right.elementAt(0),
+            ),
+          ),
+        ]),
+      ),
+    ));
   }
 }

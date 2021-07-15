@@ -52,7 +52,7 @@ class _AuthFormState extends State<AuthForm> {
     getNumOfPlayers();
   }
 
-  void _trySubmit() {
+  Future<void> _trySubmit() async {
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
 
@@ -62,13 +62,8 @@ class _AuthFormState extends State<AuthForm> {
           _isLogin, context, numOfPlayers);
     }
 
-    setState(() {
-      numOfPlayers = numOfPlayers + 1;
-    });
-    FirebaseFirestore.instance
-        .collection('room')
-        .doc('WIO7ujdueiQMdWPGkqSq')
-        .update({'numOfPlayer': numOfPlayers});
+        
+    setState(() {});
   }
 
   @override

@@ -11,8 +11,7 @@ class MyPlayingCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(5),
       side: BorderSide(color: Colors.black, width: 0.5));
 
-  static final List<MyPlayingCard> ALL_CARDS = [
-    MyPlayingCard(suit: Suit.hearts, value: CardValue.ace),
+  static final List<MyPlayingCard> ALL_CARDS = [ MyPlayingCard(suit: Suit.hearts, value: CardValue.ace),
     MyPlayingCard(suit: Suit.hearts, value: CardValue.seven),
     MyPlayingCard(suit: Suit.hearts, value: CardValue.eight),
     MyPlayingCard(suit: Suit.hearts, value: CardValue.nine),
@@ -55,6 +54,10 @@ class MyPlayingCard extends StatelessWidget {
   get cardValue => this.value;
   get cardSuit => this.suit;
 
+  void setShowBack(bool showBack) {
+    this.showBack = showBack;
+  }
+
   static MyPlayingCard getCard(
       List<MyPlayingCard> list, Suit suit, CardValue value) {
     var show;
@@ -66,10 +69,6 @@ class MyPlayingCard extends StatelessWidget {
         return show;
       }
     }
-  }
-
-  void setShowBack(bool showBack) {
-    this.showBack = showBack;
   }
 
   static Widget emptyCard() {
@@ -167,7 +166,7 @@ class MyPlayingCard extends StatelessWidget {
         break;
     }
   }
-  
+
   static String SuitToString(Suit value) {
     switch (value) {
       case Suit.clubs:
@@ -197,4 +196,6 @@ class MyPlayingCard extends StatelessWidget {
       ),
     );
   }
+
+  
 }

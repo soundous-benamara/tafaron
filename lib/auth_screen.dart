@@ -45,6 +45,13 @@ class _AuthScreenState extends State<AuthScreen> {
       } else {
         authResult = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
+
+        numOfPlayers = numOfPlayers + 1;
+        await FirebaseFirestore.instance
+            .collection('room')
+            .doc('WIO7ujdueiQMdWPGkqSq')
+            .update({'numOfPlayer': numOfPlayers});
+            
         await FirebaseFirestore.instance
             .collection('users')
             .doc(authResult.user.uid)
