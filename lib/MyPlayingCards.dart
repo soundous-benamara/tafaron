@@ -11,7 +11,8 @@ class MyPlayingCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(5),
       side: BorderSide(color: Colors.black, width: 0.5));
 
-  static final List<MyPlayingCard> ALL_CARDS = [ MyPlayingCard(suit: Suit.hearts, value: CardValue.ace),
+  static final List<MyPlayingCard> ALL_CARDS = [
+    MyPlayingCard(suit: Suit.hearts, value: CardValue.ace),
     MyPlayingCard(suit: Suit.hearts, value: CardValue.seven),
     MyPlayingCard(suit: Suit.hearts, value: CardValue.eight),
     MyPlayingCard(suit: Suit.hearts, value: CardValue.nine),
@@ -187,7 +188,7 @@ class MyPlayingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 125,
+      height: 100,
       child: PlayingCardView(
         card: PlayingCard(this.suit, this.value),
         showBack: showBack,
@@ -196,6 +197,4 @@ class MyPlayingCard extends StatelessWidget {
       ),
     );
   }
-
-  
 }
