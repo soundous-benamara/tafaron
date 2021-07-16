@@ -36,15 +36,6 @@ class _FirstPlayerState extends State<FirstPlayer> {
   User user;
   String uid1, uid2, uid3, uid4;
 
-  Map<String, dynamic> p1;
-  Map<String, dynamic> p2;
-  Map<String, dynamic> p3;
-  Map<String, dynamic> p4;
-  MyPlayingCard c1;
-  MyPlayingCard c2;
-  MyPlayingCard c3;
-  MyPlayingCard c4;
-
   Map<String, dynamic> shuffledDeck;
 
   Future<QuerySnapshot> getUsers() async {
@@ -112,10 +103,9 @@ class _FirstPlayerState extends State<FirstPlayer> {
     center.add(MyPlayingCard.emptyCard());
 
     deck.add(MyPlayingCard.emptyCard());
-    right.add(MyPlayingCard.emptyCard());
     top.add(MyPlayingCard.emptyCard());
     left.add(MyPlayingCard.emptyCard());
-    //MyPlayingCard.ALL_CARDS.shuffle();
+    right.add(MyPlayingCard.emptyCard());
 
     _enabled = true;
 
@@ -185,184 +175,36 @@ class _FirstPlayerState extends State<FirstPlayer> {
 
     return FutureBuilder(
         future: FirebaseFirestore.instance.collection('room').get(),
-        builder: (context, snapshotRoom) {
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshotRoom) {
           if (snapshotRoom.connectionState == ConnectionState.waiting) {
-            CircularProgressIndicator();
+            return CircularProgressIndicator();
           } else
             return FutureBuilder(
                 future: getUsers(),
                 builder: (context, snapshotUsers) {
                   if (snapshotUsers.connectionState ==
                       ConnectionState.waiting) {
-                    CircularProgressIndicator();
+                    return CircularProgressIndicator();
                   } else
                     return StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection('games')
                             .snapshots(),
                         builder: (context, snapshotGames) {
-                          if (snapshotGames.data.docs[0]['turn'] != 0) {
-                            if (user.uid == uid1) {
-                              deck.clear();
-                              deck.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card1']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card1']['val'])));
-                              left.clear();
-                              left.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card2']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card2']['val'])));
-                              top.clear();
-                              top.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card3']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card3']['val'])));
-                              right.clear();
-                              right.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card4']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card4']['val'])));
-                              rank[0] = shuffledDeck['card1']['val'];
-                              rank[1] = shuffledDeck['card2']['val'];
-                              rank[2] = shuffledDeck['card3']['val'];
-                              rank[3] = shuffledDeck['card4']['val'];
-                              deck[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              left[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              right[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              top[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                            }
-                            if (user.uid == uid2) {
-                              deck.clear();
-                              deck.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card2']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card2']['val'])));
-                              left.clear();
-                              left.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card3']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card3']['val'])));
-                              top.clear();
-                              top.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card4']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card4']['val'])));
-                              right.clear();
-                              right.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card1']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card1']['val'])));
-                              rank[0] = shuffledDeck['card1']['val'];
-                              rank[1] = shuffledDeck['card2']['val'];
-                              rank[2] = shuffledDeck['card3']['val'];
-                              rank[3] = shuffledDeck['card4']['val'];
-                              deck[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              left[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              right[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              top[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                            }
-                            if (user.uid == uid3) {
-                              deck.clear();
-                              deck.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card3']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card3']['val'])));
-                              left.clear();
-                              left.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card4']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card4']['val'])));
-                              top.clear();
-                              top.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card1']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card1']['val'])));
-                              right.clear();
-                              right.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card2']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card2']['val'])));
-                              rank[0] = shuffledDeck['card1']['val'];
-                              rank[1] = shuffledDeck['card2']['val'];
-                              rank[2] = shuffledDeck['card3']['val'];
-                              rank[3] = shuffledDeck['card4']['val'];
-                              deck[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              left[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              right[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              top[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                            }
-                            if (user.uid == uid4) {
-                              deck.clear();
-                              deck.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card4']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card4']['val'])));
-                              left.clear();
-                              left.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card1']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card1']['val'])));
-                              top.clear();
-                              top.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card2']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card2']['val'])));
-                              right.clear();
-                              right.add(MyPlayingCard(
-                                  suit: MyPlayingCard.StringToSuit(
-                                      shuffledDeck['card3']['suit']),
-                                  value: MyPlayingCard.IntToCardValue(
-                                      shuffledDeck['card3']['val'])));
-                              rank[0] = shuffledDeck['card1']['val'];
-                              rank[1] = shuffledDeck['card2']['val'];
-                              rank[2] = shuffledDeck['card3']['val'];
-                              rank[3] = shuffledDeck['card4']['val'];
-                              deck[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              left[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              right[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                              top[0].showBack =
-                                  snapshotGames.data.docs[0]['showCard'];
-                            }
-                          }
-                          return buildGameBoard(
-                              snapshotGames, snapshotUsers, snapshotRoom);
+                          print(snapshotGames.data.docs[0]['deck']['card1']);
+                          print(snapshotGames.data.docs[0]['deck']['card2']);
+                          print(snapshotGames.data.docs[0]['deck']['card3']);
+                          print(snapshotGames.data.docs[0]['deck']['card4']);
+                          print("*****************");
+                          print("$shuffledDeck");
+                          return buildGameBoard(snapshotGames.data,
+                              snapshotUsers.data, snapshotRoom.data);
                         });
                 });
         });
   }
 
-  Future<void> addDeck(snapshotGames) async {
+  Future<void> addDeck() async {
     MyPlayingCard.ALL_CARDS.shuffle();
     await FirebaseFirestore.instance
         .collection('games')
@@ -539,9 +381,120 @@ class _FirstPlayerState extends State<FirstPlayer> {
         },
       }
     });
+  }
+
+  Future<void> displayCards(snapshotGames) async {
     setState(() {
       shuffledDeck = snapshotGames.data.docs[0]['deck'] as Map<String, dynamic>;
     });
+    if (user.uid == uid1) {
+      deck.clear();
+      deck.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card1']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card1']['val'])));
+      left.clear();
+      left.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card2']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card2']['val'])));
+      top.clear();
+      top.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card3']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card3']['val'])));
+      right.clear();
+      right.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card4']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card4']['val'])));
+      rank[0] = shuffledDeck['card1']['val'];
+      rank[1] = shuffledDeck['card2']['val'];
+      rank[2] = shuffledDeck['card3']['val'];
+      rank[3] = shuffledDeck['card4']['val'];
+      deck[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      left[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      right[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      top[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      setState(() {});
+    }
+    if (user.uid == uid2) {
+      deck.clear();
+      deck.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card2']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card2']['val'])));
+      left.clear();
+      left.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card3']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card3']['val'])));
+      top.clear();
+      top.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card4']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card4']['val'])));
+      right.clear();
+      right.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card1']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card1']['val'])));
+      rank[0] = shuffledDeck['card1']['val'];
+      rank[1] = shuffledDeck['card2']['val'];
+      rank[2] = shuffledDeck['card3']['val'];
+      rank[3] = shuffledDeck['card4']['val'];
+      deck[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      left[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      right[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      top[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      setState(() {});
+    }
+    if (user.uid == uid3) {
+      deck.clear();
+      deck.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card3']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card3']['val'])));
+      left.clear();
+      left.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card4']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card4']['val'])));
+      top.clear();
+      top.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card1']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card1']['val'])));
+      right.clear();
+      right.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card2']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card2']['val'])));
+      rank[0] = shuffledDeck['card1']['val'];
+      rank[1] = shuffledDeck['card2']['val'];
+      rank[2] = shuffledDeck['card3']['val'];
+      rank[3] = shuffledDeck['card4']['val'];
+      deck[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      left[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      right[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      top[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      setState(() {});
+    }
+    if (user.uid == uid4) {
+      deck.clear();
+      deck.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card4']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card4']['val'])));
+      left.clear();
+      left.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card1']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card1']['val'])));
+      top.clear();
+      top.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card2']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card2']['val'])));
+      right.clear();
+      right.add(MyPlayingCard(
+          suit: MyPlayingCard.StringToSuit(shuffledDeck['card3']['suit']),
+          value: MyPlayingCard.IntToCardValue(shuffledDeck['card3']['val'])));
+      rank[0] = shuffledDeck['card1']['val'];
+      rank[1] = shuffledDeck['card2']['val'];
+      rank[2] = shuffledDeck['card3']['val'];
+      rank[3] = shuffledDeck['card4']['val'];
+      deck[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      left[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      right[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      top[0].showBack = snapshotGames.data.docs[0]['showCard'];
+      setState(() {});
+    }
   }
 
   Future<void> updateTurn(snapshotGames) async {
@@ -640,7 +593,8 @@ class _FirstPlayerState extends State<FirstPlayer> {
     }
   }
 
-  Widget buildGameBoard(snapshotGames, snapshotUsers, snapshotRoom) {
+  Widget buildGameBoard(QuerySnapshot snapshotGames,
+      QuerySnapshot snapshotUsers, QuerySnapshot snapshotRoom) {
     return MaterialApp(
         home: Scaffold(
       backgroundColor: Color.fromRGBO(44, 62, 80, 1.0),
@@ -683,14 +637,9 @@ class _FirstPlayerState extends State<FirstPlayer> {
                   ),
                 ),
                 onTap: () async {
-                  await addDeck(snapshotGames);
-                  await updateTurn(snapshotGames);
+                  await addDeck();
+                  await displayCards(snapshotGames);
                   await getFirstPlayer();
-                  if (snapshotRoom.data.docs[0]['numOfPlayer'] == -1) {
-                    return AuthScreen(
-                      numOfPlayers: snapshotRoom.data.docs[0]['numOfPlayer'],
-                    );
-                  }
                 },
               ),
               Container(
