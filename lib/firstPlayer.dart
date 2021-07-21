@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:playing_cards/playing_cards.dart';
 import 'package:flutter/services.dart';
+import 'package:turns/ChooseGame.dart';
 import 'package:turns/MyPlayingCards.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:turns/StartNewGame.dart';
@@ -189,13 +190,6 @@ class _FirstPlayerState extends State<FirstPlayer> {
                             .collection('games')
                             .snapshots(),
                         builder: (context, snapshotGames) {
-                          // print(snapshotGames.data.docs[0]['deck']['card1']);
-                          // print(snapshotGames.data.docs[0]['deck']['card2']);
-                          // print(snapshotGames.data.docs[0]['deck']['card3']);
-                          // print(snapshotGames.data.docs[0]['deck']['card4']);
-                          // print("*****************");
-                          // print("$shuffledDeck");
-
                           final currentDeck = snapshotGames.data.docs[0]['deck']
                               as Map<String, dynamic>;
 
@@ -207,7 +201,6 @@ class _FirstPlayerState extends State<FirstPlayer> {
                               ['val'];
                           rank[3] = snapshotGames.data.docs[0]['deck']['card4']
                               ['val'];
-                          print(rank);
 
                           if (snapshotGames.data.docs[0]['isChosen'] == true &&
                               snapshotGames.data.docs[0]['displayCards'] ==
@@ -235,7 +228,13 @@ class _FirstPlayerState extends State<FirstPlayer> {
                                   false);
                             });
 
-                            
+                            Future.delayed(Duration(seconds: 3), () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ChooseGame()),
+                              );
+                            });
                           }
 
                           return buildGameBoard(snapshotGames.data,
@@ -247,181 +246,18 @@ class _FirstPlayerState extends State<FirstPlayer> {
 
   Future<void> addDeck() async {
     MyPlayingCard.ALL_CARDS.shuffle();
+    final newDeckDoc = {
+      'deck': MyPlayingCard.ALL_CARDS.asMap().map(
+            (i, value) => MapEntry("card${i + 1}", {
+              'val': MyPlayingCard.CardValueToInt(value.cardValue),
+              'suit': MyPlayingCard.SuitToString(value.cardSuit),
+            }),
+          ),
+    };
     await FirebaseFirestore.instance
         .collection('games')
         .doc('YpyyMAaFcRzCPbphEfYR')
-        .update({
-      'deck': {
-        'card1': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[0].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[0].cardSuit),
-        },
-        'card2': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[1].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[1].cardSuit),
-        },
-        'card3': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[2].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[2].cardSuit),
-        },
-        'card4': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[3].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[3].cardSuit),
-        },
-        'card5': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[4].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[4].cardSuit),
-        },
-        'card6': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[5].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[5].cardSuit),
-        },
-        'card7': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[6].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[6].cardSuit),
-        },
-        'card8': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[7].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[7].cardSuit),
-        },
-        'card9': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[8].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[8].cardSuit),
-        },
-        'card10': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[9].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[9].cardSuit),
-        },
-        'card11': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[10].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[10].cardSuit),
-        },
-        'card12': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[11].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[11].cardSuit),
-        },
-        'card13': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[12].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[12].cardSuit),
-        },
-        'card14': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[13].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[13].cardSuit),
-        },
-        'card15': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[14].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[14].cardSuit),
-        },
-        'card16': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[15].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[15].cardSuit),
-        },
-        'card17': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[16].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[16].cardSuit),
-        },
-        'card18': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[17].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[17].cardSuit),
-        },
-        'card19': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[18].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[18].cardSuit),
-        },
-        'card20': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[19].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[19].cardSuit),
-        },
-        'card21': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[20].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[20].cardSuit),
-        },
-        'card22': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[21].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[21].cardSuit),
-        },
-        'card23': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[22].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[22].cardSuit),
-        },
-        'card24': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[23].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[23].cardSuit),
-        },
-        'card25': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[24].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[24].cardSuit),
-        },
-        'card26': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[25].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[25].cardSuit),
-        },
-        'card27': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[26].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[26].cardSuit),
-        },
-        'card28': {
-          'val': MyPlayingCard.CardValueToInt(
-              MyPlayingCard.ALL_CARDS[27].cardValue),
-          'suit':
-              MyPlayingCard.SuitToString(MyPlayingCard.ALL_CARDS[27].cardSuit),
-        },
-      }
-    });
+        .update(newDeckDoc);
   }
 
   void displayCards(
@@ -513,6 +349,13 @@ class _FirstPlayerState extends State<FirstPlayer> {
             {'indexOfFirstPlayer': number, 'isChosen': b, 'displayCards': b});
   }
 
+  Future<void> updateData(String str, int b) async {
+    await FirebaseFirestore.instance
+        .collection('games')
+        .doc('YpyyMAaFcRzCPbphEfYR')
+        .update({str: b});
+  }
+
   Future<void> getFirstPlayer() async {
     indexOfPlayer = 0;
     maxVal = rank[0];
@@ -522,9 +365,6 @@ class _FirstPlayerState extends State<FirstPlayer> {
         indexOfPlayer = index;
       }
     }
-    print(indexOfPlayer);
-    print("#################");
-    print(maxVal);
     switch (indexOfPlayer) {
       case 0:
         await FirebaseFirestore.instance
@@ -558,8 +398,8 @@ class _FirstPlayerState extends State<FirstPlayer> {
         break;
       default:
     }
-
     updateTurn(indexOfPlayer + 1, true);
+    updateData('turn', indexOfPlayer + 1);
   }
 
   Widget buildGameBoard(QuerySnapshot snapshotGames,
@@ -577,7 +417,7 @@ class _FirstPlayerState extends State<FirstPlayer> {
               margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(5),
               width: 80,
-              child: deck.elementAt(0),
+              child: left.elementAt(0),
             ),
           ),
           Column(
@@ -587,11 +427,11 @@ class _FirstPlayerState extends State<FirstPlayer> {
                 margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(5),
                 width: 80,
-                child: left.elementAt(0),
+                child: top.elementAt(0),
               ),
               GestureDetector(
                 child: Transform.rotate(
-                  angle: 3.14 / 2,
+                  angle: 1 / 30,
                   child: Container(
                     padding: EdgeInsets.all(0),
                     width: 170,
@@ -616,7 +456,7 @@ class _FirstPlayerState extends State<FirstPlayer> {
                 margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(5),
                 width: 80,
-                child: right.elementAt(0),
+                child: deck.elementAt(0),
               ),
             ],
           ),
@@ -626,7 +466,7 @@ class _FirstPlayerState extends State<FirstPlayer> {
               margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(5),
               width: 80,
-              child: top.elementAt(0),
+              child: right.elementAt(0),
             ),
           ),
         ]),

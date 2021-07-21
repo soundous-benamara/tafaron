@@ -8,7 +8,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:turns/NoHearts.dart';
 import 'package:turns/NoKingOfSpades.dart';
 import 'package:turns/NoQueens.dart';
-import 'package:turns/NoTricks.dart';
 
 import 'package:turns/NoLastOne.dart';
 import 'package:turns/Trumps.dart';
@@ -402,24 +401,7 @@ class _StartNewGame extends State<StartNewGame> {
       switch (z.data) {
         case 'No Tricks':
           enabledGame[0] = false;
-          Future.delayed(Duration(seconds: 3), () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => NoTricks(
-                        firstPlayer: widget.firstPlayer,
-                        player1: player1,
-                        player2: player2,
-                        player3: player3,
-                        player4: player4,
-                        player1Rank: player1Rank,
-                        player2Rank: player2Rank,
-                        player3Rank: player3Rank,
-                        player4Rank: player4Rank,
-                        enabledGame: enabledGame,
-                      )),
-            );
-          });
+          Future.delayed(Duration(seconds: 3), () {});
           break;
         case 'No king of spades':
           enabledGame[1] = false;

@@ -4,7 +4,6 @@ import 'package:playing_cards/playing_cards.dart';
 import 'package:flutter/services.dart';
 import 'package:turns/MyPlayingCards.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:turns/NoTricks.dart';
 
 // ignore: must_be_immutable
 class StartGame extends StatefulWidget {
@@ -663,7 +662,6 @@ class _StartGame extends State<StartGame> {
     setState(() {
       switch (displayedPlayer) {
         case 1:
-          center.add(MyPlayingCard.getCard(player1, s, val));
           display.clear();
           display.addAll(player2);
           displayedPlayer = 2;
@@ -679,7 +677,6 @@ class _StartGame extends State<StartGame> {
           }
           break;
         case 2:
-          center.add(MyPlayingCard.getCard(player2, s, val));
           display.clear();
           display.addAll(player3);
           displayedPlayer = 3;
@@ -695,7 +692,6 @@ class _StartGame extends State<StartGame> {
           }
           break;
         case 3:
-          center.add(MyPlayingCard.getCard(player3, s, val));
           display.clear();
           display.addAll(player4);
 
@@ -713,7 +709,6 @@ class _StartGame extends State<StartGame> {
           }
           break;
         case 4:
-          center.add(MyPlayingCard.getCard(player4, s, val));
           display.clear();
           display.addAll(player1);
           displayedPlayer = 1;
@@ -1339,38 +1334,17 @@ class _StartGame extends State<StartGame> {
                                             switch (displayedPlayer) {
                                               case 1:
                                                 print('CENTER1 $center');
-                                                center.add(
-                                                    MyPlayingCard.getCard(
-                                                        player1,
-                                                        e.cardSuit,
-                                                        e.cardValue));
                                                 print('CENTER $center');
                                                 break;
                                               case 2:
                                                 print('CENTER1 $center');
-                                                center.add(
-                                                    MyPlayingCard.getCard(
-                                                        player2,
-                                                        e.cardSuit,
-                                                        e.cardValue));
                                                 print('CENTER $center');
                                                 break;
                                               case 3:
                                                 print('CENTER1 $center');
-                                                center.add(
-                                                    MyPlayingCard.getCard(
-                                                        player3,
-                                                        e.cardSuit,
-                                                        e.cardValue));
-                                                print('CENTER $center');
                                                 break;
                                               case 4:
                                                 print('CENTER1 $center');
-                                                center.add(
-                                                    MyPlayingCard.getCard(
-                                                        player4,
-                                                        e.cardSuit,
-                                                        e.cardValue));
                                                 print('CENTER $center');
                                                 break;
                                               default:
@@ -1509,34 +1483,18 @@ class _StartGame extends State<StartGame> {
                                   switch (displayedPlayer) {
                                     case 1:
                                       print('CENTER1 $center');
-                                      center.add(MyPlayingCard.getCard(
-                                          player1,
-                                          display.elementAt(0).cardSuit,
-                                          display.elementAt(0).cardValue));
                                       print('CENTER $center');
                                       break;
                                     case 2:
                                       print('CENTER1 $center');
-                                      center.add(MyPlayingCard.getCard(
-                                          player2,
-                                          display.elementAt(0).cardSuit,
-                                          display.elementAt(0).cardValue));
                                       print('CENTER $center');
                                       break;
                                     case 3:
                                       print('CENTER1 $center');
-                                      center.add(MyPlayingCard.getCard(
-                                          player3,
-                                          display.elementAt(0).cardSuit,
-                                          display.elementAt(0).cardValue));
                                       print('CENTER $center');
                                       break;
                                     case 4:
                                       print('CENTER1 $center');
-                                      center.add(MyPlayingCard.getCard(
-                                          player4,
-                                          display.elementAt(0).cardSuit,
-                                          display.elementAt(0).cardValue));
                                       print('CENTER $center');
                                       break;
                                     default:

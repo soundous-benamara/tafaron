@@ -45,6 +45,7 @@ class _AuthScreenState extends State<AuthScreen> {
       } else {
         authResult = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
+            
 
         numOfPlayers = numOfPlayers + 1;
         await FirebaseFirestore.instance
@@ -59,6 +60,8 @@ class _AuthScreenState extends State<AuthScreen> {
           'username': userName,
           'email': email,
         });
+
+        
       }
     } on PlatformException catch (e) {
       var message = 'An error occurred, please check your credentials';

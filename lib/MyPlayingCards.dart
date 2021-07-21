@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:playing_cards/playing_cards.dart';
 import 'package:flutter/foundation.dart';
@@ -59,15 +60,60 @@ class MyPlayingCard extends StatelessWidget {
     this.showBack = showBack;
   }
 
-  static MyPlayingCard getCard(
-      List<MyPlayingCard> list, Suit suit, CardValue value) {
-    var show;
+  static void getCard(
+      List<MyPlayingCard> list, Suit suit, CardValue value, int turn) {
     for (int i = 0; i < list.length; i++) {
       if (list.elementAt(i).cardSuit == suit &&
           list.elementAt(i).cardValue == value) {
-        show = list.elementAt(i);
+        switch (turn) {
+          case 1:
+            FirebaseFirestore.instance
+                .collection('games')
+                .doc('YpyyMAaFcRzCPbphEfYR')
+                .update({
+              'trickCard1': {
+                'val': MyPlayingCard.CardValueToInt(value),
+                'suit': MyPlayingCard.SuitToString(suit)
+              }
+            });
+            break;
+          case 2:
+            FirebaseFirestore.instance
+                .collection('games')
+                .doc('YpyyMAaFcRzCPbphEfYR')
+                .update({
+              'trickCard2': {
+                'val': MyPlayingCard.CardValueToInt(value),
+                'suit': MyPlayingCard.SuitToString(suit)
+              }
+            });
+            break;
+          case 3:
+            FirebaseFirestore.instance
+                .collection('games')
+                .doc('YpyyMAaFcRzCPbphEfYR')
+                .update({
+              'trickCard3': {
+                'val': MyPlayingCard.CardValueToInt(value),
+                'suit': MyPlayingCard.SuitToString(suit)
+              }
+            });
+            break;
+          case 4:
+            FirebaseFirestore.instance
+                .collection('games')
+                .doc('YpyyMAaFcRzCPbphEfYR')
+                .update({
+              'trickCard4': {
+                'val': MyPlayingCard.CardValueToInt(value),
+                'suit': MyPlayingCard.SuitToString(suit)
+              }
+            });
+            break;
+          default:
+        }
         list.removeAt(i);
-        return show;
+        break;
       }
     }
   }
